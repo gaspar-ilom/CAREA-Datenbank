@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
+import ResetPassword from '../views/ResetPassword.vue'
 import Seminare from '../views/Seminare.vue'
 import store from '../store'
 
@@ -41,6 +42,12 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: Register,
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/reset_password',
+    name: 'ResetPassword',
+    component: ResetPassword,
     beforeEnter: ifAuthenticated
   },
   {

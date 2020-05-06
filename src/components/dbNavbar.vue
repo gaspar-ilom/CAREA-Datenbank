@@ -16,12 +16,6 @@
           <router-link class="nav-link" v-bind:to="nav.to">{{ nav.name }}</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="register">Benutzer registrieren</router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link disabled" to="Passwort_ändern">Passwort ändern</router-link>
-        </li>
-        <li class="nav-item">
           <a class="nav-link btn-danger" href="" v-on:click="logout()" >Logout</a>
         </li>
       </ul>
@@ -39,7 +33,9 @@ export default {
         { name: 'Seminare', to: '/events' },
         { name: 'Abfragen', to: '/queries' },
         { name: 'Eingabeformulare', to: '/forms' },
-        { name: 'Daten löschen', to: '/delete-data' }]
+        { name: 'Daten löschen', to: '/delete-data' },
+        { name: 'Benutzer registrieren', to: '/register' },
+        { name: 'Passwort ändern', to: '/reset_password' }]
     }
   },
   methods: {
