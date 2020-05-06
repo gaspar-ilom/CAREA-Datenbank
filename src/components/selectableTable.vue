@@ -2,7 +2,7 @@
   <div class="filteredTable">
     <h2 style="text-align:center; margin-bottom: 15px;">{{ tableName }}</h2>
 
-    <div v-if="tableName" class="input-group mb-3">
+    <div v-if="table.length" class="input-group mb-3">
       <input
         type="text"
         class="form-control"
@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <table class="table table-hover table-striped table-bordered">
+    <table v-if="table.length" class="table table-hover table-striped table-bordered">
       <thead>
         <tr>
           <th v-if="getHeader.length" class="table-dark">#</th>
@@ -23,8 +23,15 @@
       </thead>
       <tbody>
         <tr v-for="(row, index) in filteredTable" v-bind:key="index" v-on:click="setSelector(row)">
-          <td v-if="getHeader.length">{{ index }}</td>
-          <td v-for="col in getHeader" v-bind:key="col">{{ row[col] }}</td>
+          <!-- <td v-for="col in getHeader" v-bind:key="col">{{ row[col] }}</td> -->
+          <template v-if="row.hasOwnProperty('Absage')&&row.Absage==1" >
+            <td class="table-danger" v-if="getHeader.length">{{ index }}</td>
+            <td class="table-danger" v-for='col in getHeader' v-bind:key="col">{{ row[col] }}</td>
+          </template>
+          <template v-else>
+            <td v-if="getHeader.length">{{ index }}</td>
+            <td v-for='col in getHeader' v-bind:key="col">{{ row[col] }}</td>
+          </template>
         </tr>
       </tbody>
     </table>

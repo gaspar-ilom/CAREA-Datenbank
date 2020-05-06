@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 20px;">
+  <div style="margin: 15px;">
     <h1 style="text-align: center;">CAREA Datenbank</h1>
     <div class="wrapper" style="margin: auto; margin-top: 20px;">
       <form @submit.prevent="login">

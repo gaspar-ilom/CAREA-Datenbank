@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 20px;">
+  <div style="margin: 15px;">
     <h1 style="text-align: center;">Benutzerkonto erstellen</h1>
     <div class="wrapper" style="margin: auto; margin-top: 0px;">
       <form @submit.prevent="resetPassword()">
