@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
+import Register from '../views/Register.vue'
 import Seminare from '../views/Seminare.vue'
 import store from '../store'
 
@@ -35,6 +36,12 @@ const routes = [
     name: 'Login',
     component: Login,
     beforeEnter: ifNotAuthenticated
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register,
+    beforeEnter: ifAuthenticated
   },
   {
     path: '/events',

@@ -16,7 +16,7 @@
           <router-link class="nav-link" v-bind:to="nav.to">{{ nav.name }}</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link disabled" to="Benutzer_erstellen">Benutzer erstellen</router-link>
+          <router-link class="nav-link" to="register">Benutzer registrieren</router-link>
         </li>
         <li class="nav-item">
           <router-link class="nav-link disabled" to="Passwort_ändern">Passwort ändern</router-link>
