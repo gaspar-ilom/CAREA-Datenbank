@@ -5,6 +5,7 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import Seminare from '../views/Seminare.vue'
+import Queries from '../views/Queries.vue'
 import store from '../store'
 
 Vue.use(VueRouter)
@@ -54,6 +55,12 @@ const routes = [
     path: '/events',
     name: 'Seminare',
     component: Seminare,
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/queries',
+    name: 'Queries',
+    component: Queries,
     beforeEnter: ifAuthenticated
   },
   {
