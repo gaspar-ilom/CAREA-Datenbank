@@ -6,6 +6,7 @@ import Register from '../views/Register.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import Seminare from '../views/Seminare.vue'
 import Queries from '../views/Queries.vue'
+import DeleteData from '../views/DeleteData.vue'
 import store from '../store'
 
 Vue.use(VueRouter)
@@ -64,21 +65,15 @@ const routes = [
     beforeEnter: ifAuthenticated
   },
   {
-    path: '/queries',
-    name: 'Queries',
-    component: Home,
-    beforeEnter: ifAuthenticated
-  },
-  {
     path: '/forms',
     name: 'Forms',
     component: Home,
     beforeEnter: ifAuthenticated
   },
   {
-    path: '/delete-data',
-    name: 'Delete-Data',
-    component: Home,
+    path: '/delete_data',
+    name: 'DeleteData',
+    component: DeleteData,
     beforeEnter: ifAuthenticated
   },
   {

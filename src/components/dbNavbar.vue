@@ -33,7 +33,7 @@ export default {
         { name: 'Seminare', to: '/events' },
         { name: 'Abfragen', to: '/queries' },
         { name: 'Eingabeformulare', to: '/forms' },
-        { name: 'Daten löschen', to: '/delete-data' },
+        { name: 'Daten löschen', to: '/delete_data' },
         { name: 'Benutzer registrieren', to: '/register' },
         { name: 'Passwort ändern', to: '/reset_password' }]
     }
