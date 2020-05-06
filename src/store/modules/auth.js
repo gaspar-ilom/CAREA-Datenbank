@@ -36,6 +36,7 @@ const actions = {
         .catch(err => {
           commit(AUTH_ERROR, err)
           localStorage.removeItem('user-token')
+          delete axios.defaults.headers.common.Authorization
           reject(err)
         })
     })
@@ -44,6 +45,7 @@ const actions = {
     return new Promise(resolve => {
       commit(AUTH_LOGOUT)
       localStorage.removeItem('user-token')
+      delete axios.defaults.headers.common.Authorization
       resolve()
     })
   }

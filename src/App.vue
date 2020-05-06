@@ -3,7 +3,7 @@
     <div id="nav">
       <dbNavbar v-if="isLoggedIn"></dbNavbar>
     </div>
-    <div v-if="alert&&!isLoggedIn" class="alert alert-danger"><strong>Ausgeloggt: </strong>Du wurdest ausgeloggt, weil dein Sitzungstoken abgelaufen ist. Bitte neu einloggen.</div>
+    <div v-if="alert&&!isLoggedIn" class="alert alert-danger" style="margin: 20px;"><strong>Ausgeloggt: </strong>Du wurdest ausgeloggt, weil dein Sitzungstoken abgelaufen ist. Bitte neu einloggen.</div>
     <router-view v-bind:tables="tables" v-bind:queries="queries" v-bind:personQueries="personQueries" v-bind:seminars="seminars" v-bind:forms="forms"/>
   </div>
 </template>
