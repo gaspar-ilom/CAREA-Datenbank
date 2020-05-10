@@ -74,7 +74,7 @@ export default {
       this.getQueries()
       this.getPersonQueries()
       this.getSeminars()
-      // this.getForms();
+      this.getForms()
     },
     getTables: function () {
       console.log('getTables')

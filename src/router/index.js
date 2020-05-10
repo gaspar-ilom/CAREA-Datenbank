@@ -6,6 +6,7 @@ import Register from '../views/Register.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import Seminare from '../views/Seminare.vue'
 import Queries from '../views/Queries.vue'
+import Forms from '../views/Forms.vue'
 import DeleteData from '../views/DeleteData.vue'
 import store from '../store'
 
@@ -67,7 +68,7 @@ const routes = [
   {
     path: '/forms',
     name: 'Forms',
-    component: Home,
+    component: Forms,
     beforeEnter: ifAuthenticated
   },
   {
