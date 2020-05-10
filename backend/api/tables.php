@@ -44,17 +44,29 @@ switch ($method) {
       echo '[]';
       exit;
     } else {
-      $sql = "select * from " . $table;
+      $sql = "select * from " . mysqli_real_escape_string($link, $table);
     }
     break;
   case 'POST':
-    $name    = $_POST["name"];
-    $email   = $_POST["email"];
-    $country = $_POST["country"];
-    $city    = $_POST["city"];
-    $job     = $_POST["job"];
-
-    $sql = "insert into contacts (name, email, city, country, job) values ('$name', '$email', '$city', '$country', '$job')";
+    $table = $_POST["table"];
+    if ($table) {
+      $escaped_table = mysqli_real_escape_string($link, $table);
+      $keys = array_keys($_POST);
+      $sql = "INSERT INTO $escaped_table (";
+      for ($i=0; $i<count($keys); $i++) {
+        if ($keys[$i] !== 'table') {
+          $sql = $sql . mysqli_real_escape_string($link, $keys[$i]) . ", ";
+        }
+      }
+      $sql = rtrim($sql, ", ") . ") values (";
+      for ($i=0; $i<count($keys); $i++) {
+        if ($keys[$i] !== 'table') {
+          $sql = $sql . "'" . mysqli_real_escape_string($link, $_POST[$keys[$i]]) . "'" . ", ";
+        }
+      }
+      $sql = rtrim($sql, ", ") . ");";
+      echo $sql;
+    }
     break;
 }
 
