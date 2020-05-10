@@ -9,7 +9,7 @@
       </button>
     </template>
 
-    <entryForm v-bind:formName="displayFormName" v-bind:form="displayForm"></entryForm>
+    <entryForm v-bind:formName="displayFormName" v-bind:form="displayForm" v-bind:personId="personId" v-bind:seminarId="seminarId"></entryForm>
 
   </div>
 </template>
@@ -28,7 +28,9 @@ export default {
       displayTable: [],
       displayForm: [],
       resetSelection: false,
-      deleteButtonUnclicked: true
+      deleteButtonUnclicked: true,
+      personId: '',
+      seminarId: ''
     }
   },
   props: {
