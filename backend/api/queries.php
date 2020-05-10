@@ -54,19 +54,30 @@ $queries = array(
                                          FROM person AS p
                                          JOIN reader AS r ON p.id = r.Person_id, seminarteilnahme AS st
                                          WHERE p.id = st.person_id AND r.Bezahlt IS NOT NULL ORDER BY st.Seminar_id, p.Name;",
+  "Reader noch nicht bezahlt"        => "SELECT p.Vorname, p.Name, p.Strasse, p.PLZ, p.Ort, p.Telefon, p.Email, r.Verschickt_am AS Reader_verschickt, r.Region, r.Alternativadresse 
+                                         FROM person AS p JOIN reader AS r ON p.id = r.Person_id, seminarteilnahme AS st 
+                                         WHERE p.id = st.person_id AND r.Bezahlt IS NULL 
+                                         ORDER BY st.Seminar_id, p.Name;",
   "Unterwegs: beim Aval mitschicken" => "SELECT p.Vorname, p.Reisemail, CONCAT_WS('-', MONTH(a.Abflug), YEAR(a.Abflug)) AS Abflug, CONCAT_WS('-', MONTH(a.Rueckflug), YEAR(a.Rueckflug)) AS Rueckflug, a.Region
                                          FROM person AS p JOIN ausreise AS a ON p.id = a.Person_id, seminar AS s, seminarteilnahme AS st
                                          WHERE st.seminar_id = s.id AND p.id = st.person_id AND a.CdB IS NULL AND ( a.Rueckflug > CURDATE() OR a.Rueckflug IS NULL)
                                          ORDER BY p.Name;",
-  "Unterwegs: CdB Checkliste"        => "",
-  "Unterwegs: Liste für Wolfgang"   => "SELECT p.Vorname, p.Name, p.Ort, p.Reisemail, a.Abflug, a.Rueckflug, a.Region
+  "Unterwegs: CdB Checkliste"        => "SELECT p.Vorname, p.Name, p.Strasse, p.PLZ, p.Ort, p.Telefon, p.Email, p.Reisemail, a.Region, a.Anmerkung, a.Abflug, a.Rueckflug 
+                                         FROM person AS p JOIN ausreise AS a ON p.id=a.Person_id
+                                         WHERE a.CdB IS NULL 
+                                         ORDER BY a.Rueckflug, p.Name;",
+  "Unterwegs: Liste für Wolfgang"    => "SELECT p.Vorname, p.Name, p.Ort, p.Reisemail, a.Abflug, a.Rueckflug, a.Region
                                          FROM person AS p JOIN ausreise AS a ON p.id = a.Person_id
                                          WHERE a.CdB IS NULL AND ( a.Rueckflug > CURDATE() OR a.Rueckflug IS NULL)
                                          ORDER BY p.Name;",
-  "Löschbare Notfallkontakte"       => "SELECT *
+  "Löschbare Notfallkontakte"        => "SELECT *
                                          FROM notfallkontakt AS n
                                          JOIN ausreise AS a ON n.Ausreise_id=a.id
                                          WHERE a.CdB IS NOT NULL;",
+  "NBS Einladungen verschicken"      => "SELECT DISTINCT p.Vorname, p.Name, p.Telefon, p.Email, p.Reisemail, a.Abflug, a.Rueckflug, a.CdB 
+                                         FROM person AS p JOIN ausreise AS a ON p.id=a.Person_id, seminar AS s, seminarteilnahme AS st 
+                                         WHERE st.seminar_id=s.id AND p.id=st.person_id AND NOT s.Typ='NBS' AND (a.CdB IS NULL OR a.CdB > MAKEDATE(YEAR(DATE_SUB(CURDATE(), INTERVAL 2 YEAR)), 306)) 
+                                         ORDER BY p.Name;"
 );
 
 $person_queries = array(
@@ -112,7 +123,6 @@ $deletions = array(
 
 switch ($method) {
   case 'GET':
-    // TODO remove in production
     $query         = $_GET['query'];
     $person_query  = $_GET['person_query'];
     $seminar_query = $_GET['seminar_query'];
