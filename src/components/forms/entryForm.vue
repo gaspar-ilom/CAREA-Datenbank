@@ -8,12 +8,16 @@
         <div style="margin: 10px;">
           <h2>{{ tableName(index) }}</h2>
 
-          <form @change="$forceUpdate()" @submit.prevent="submit(tableName(index))">
+          <form v-if="tableName(index)!='notfallkontakt'||ausreiseId" @change="$forceUpdate()" @submit.prevent="submit(tableName(index))">
 
             <div class="form-group" v-for="field in curForm[tableName(index)]" :key="field.Field">
               <template v-if="field.Type=='number'&&(field.Field==='Person_id'||field.Field==='Seminar_id')">
                 <!-- <label>{{ field.Field }}</label>
                 <input class="form-control" v-bind:required="!!field.Required" v-model="formInput[tableName(index)][field.Field]" v-bind:type="field.Type" v-bind:placeholder="field.Field" /> -->
+              </template>
+              <template v-else-if="field.Type=='number'&&(field.Field==='Ausreise_id')">
+                <label>{{ field.Field }}: {{ausreiseId}}</label>
+                <!-- <input class="form-control" v-bind:required="!!field.Required" v-model="formInput[tableName(index)][field.Field]" v-bind:type="field.Type" v-bind:placeholder="field.Field" /> -->
               </template>
               <template v-else-if="field.Type=='bool'">
                 <label style="margin-right: 0.5em;">{{ field.Field }}</label>
@@ -63,14 +67,13 @@
 
             <button class="btn btn-primary" type="submit">Daten eintragen</button>
 
-            <div v-if="alertEmph==='Erfolg: '" class="alert alert-success"><strong>{{ alertEmph }}</strong>{{ alertMessage }}</div>
-            <div v-else-if="alertEmph==='Fehler: '" class="alert alert-danger"><strong>{{ alertEmph }}</strong>{{ alertMessage }}</div>
+            <div v-if="alertEmph.length>index&&alertEmph[index]==='Erfolg: '" class="alert alert-success" style="margin-top: 20px;"><strong>{{ alertEmph[index] }}</strong>{{ alertMessage[index] }}</div>
+            <div v-else-if="alertEmph.length>index&&alertEmph[index]==='Fehler: '" class="alert alert-danger" style="margin-top: 20px;"><strong>{{ alertEmph[index] }}</strong>{{ alertMessage[index] }}</div>
 
           </form>
 
         </div>
       </div>
-      <button v-if="form.length>1" class="btn btn-primary" style="margin-left: 20px;" v-on:click="submitAllForms()">Alle Daten eintragen</button>
     </div>
   </div>
 </template>
@@ -82,8 +85,8 @@ export default {
   data () {
     return {
       initiated: false,
-      alertEmph: '',
-      alertMessage: '',
+      alertEmph: [],
+      alertMessage: [],
       ausreiseId: '',
       formInput: {}
     }
@@ -100,12 +103,28 @@ export default {
       return function (index) {
         return Object.keys(app.form[index])[0]
       }
+    },
+    getIndex: function () {
+      const app = this
+      return function (table) {
+        for (var i = 0; i < app.form.length; i++) {
+          if (Object.prototype.hasOwnProperty.call(app.form[i], table)) {
+            return i
+          }
+        }
+        return 0
+      }
     }
   },
   watch: {
     form: function (val) {
-      this.formInput = {}
-      this.initiated = false
+      this.reset()
+    },
+    personId: function (val) {
+      this.reset()
+    },
+    seminarId: function (val) {
+      this.reset()
     }
   },
   methods: {
@@ -121,6 +140,12 @@ export default {
           } else if (this.seminarId && this.form[i][this.tableName(i)][j].Field === 'Seminar_id') {
             this.formInput[this.tableName(i)].Seminar_id = this.seminarId
           } else {
+            if (this.form[i][this.tableName(i)][j].Field === 'Person_id') {
+              this.$emit('required-prop', 'Person_id')
+            }
+            if (this.form[i][this.tableName(i)][j].Field === 'Seminar_id') {
+              this.$emit('required-prop', 'Seminar_id')
+            }
             this.formInput[this.tableName(i)][this.form[i][this.tableName(i)][j].Field] = this.form[i][this.tableName(i)][j].Default
           }
         }
@@ -129,41 +154,59 @@ export default {
       return this.initiated
     },
     postFormData: function (formData) {
-      // const app = this
+      const app = this
+      const table = formData.get('table')
+      const index = this.getIndex(table)
       this.$http.post('api/tables.php', formData)
         .then(function (response) {
           console.log(response.data)
-          // app.displayTable = response.data
+          app.alertEmph[index] = 'Erfolg: '
+          app.alertMessage[index] = 'Daten eingetragen.'
+          if (table === 'ausreise') {
+            app.ausreiseId = response.data
+          }
+          if (table === 'notfallkontakt') {
+            app.ausreiseId = ''
+          }
+          app.initiated = false
+          app.$forceUpdate()
         })
         .catch(function (error) {
+          app.alertEmph[index] = 'Fehler: '
+          app.alertMessage[index] = 'Daten nicht eingetragen:\n'
+          app.alertMessage[index] += error.response.data
           console.log(error)
+          app.$forceUpdate()
         })
     },
-    submitAllForms: function () {
-      for (var i = 0; i < this.form.length; i++) {
-        this.submit(this.tableName(i))
-      }
+    reset: function () {
+      this.formInput = {}
+      this.alertEmph = []
+      this.alertMessage = []
+      this.ausreiseId = ''
+      this.initiated = false
     },
     submit: function (table) {
-      console.log('FormInput: ' + JSON.stringify(this.formInput[table]))
-      // TODO
+      console.log('Submit: ' + table)
+      const index = this.getIndex(table)
       const inputData = this.formInput[table]
       const formData = new FormData()
-      const fields = Object.keys(inputData)
       formData.append('table', table)
-      for (var i = 0; i < fields.length; i++) {
-        formData.append(fields[i], inputData[fields[i]])
+      if (Object.prototype.hasOwnProperty.call(inputData, 'Person_id') && this.personId) {
+        inputData.Person_id = this.personId
+      }
+      if (Object.prototype.hasOwnProperty.call(inputData, 'Seminar_id') && this.seminarId) {
+        inputData.Seminar_id = this.seminarId
       }
       switch (table) {
-        case 'person':
-          // TODO
-          break
-
         case 'notfallkontakt':
-          // TODO
           if (!this.ausreiseId) {
-            // TODO handle error
+            this.alertEmph[index] = 'Fehler: '
+            this.alertMessage[index] = 'Keine Ausreise_id.'
+            this.$forceUpdate()
+            return
           }
+          inputData.Ausreise_id = this.ausreiseId
           break
 
         case 'seminar':
@@ -171,9 +214,11 @@ export default {
           break
 
         default:
-          // TODO
+          // TODO?
           break
       }
+      console.log('FormInput: ' + JSON.stringify(inputData))
+      formData.append('inputData', JSON.stringify(inputData))
       this.postFormData(formData)
     }
   }
