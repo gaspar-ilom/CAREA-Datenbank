@@ -77,11 +77,9 @@ export default {
       this.getForms()
     },
     getTables: function () {
-      console.log('getTables')
       const app = this
       this.$http.get('api/tables.php')
         .then(function (response) {
-          console.log('getTables success')
           console.log(response.data)
           app.tables = response.data
         })
