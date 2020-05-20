@@ -10,6 +10,11 @@
 
           <form v-if="tableName(index)!='notfallkontakt'||ausreiseId" @change="$forceUpdate()" @submit.prevent="submit(tableName(index))">
 
+            <div class="form-group" v-if="tableName(index)==='seminar'">
+              <label style="margin-right: 0.5em;">Jahr: </label>
+              <input v-bind:required="!(customSeminarName&&customSeminarDate)" v-model="year" type="number" :min="new Date().getFullYear()" :max="new Date().getFullYear()+5" placeholder="JJJJ" /><br>
+            </div>
+
             <div class="form-group" v-for="field in curForm[tableName(index)]" :key="field.Field">
               <template v-if="field.Type=='number'&&(field.Field==='Person_id'||field.Field==='Seminar_id')">
                 <!-- <label>{{ field.Field }}</label>
@@ -50,6 +55,40 @@
                   <label style="margin-right: 0.5em;">Sonstige</label>
                   <input style="margin-right: 2em;" type="radio" v-model="formInput[tableName(index)][field.Field]" value="x">
                 </template>
+                <template class="border" v-else-if="field.Field=='Bezeichnung'&&tableName(index)=='seminar'">
+                  <label>{{ field.Field }}</label><br>
+                  <template v-if="year">
+                    <label style="margin-right: 0.5em;">VBS Chiapas Sommer {{year}}</label>
+                    <input style="margin-right: 2em;" type="radio" v-model="formInput[tableName(index)][field.Field]" v-bind:value="'VBS Chiapas Sommer '+ year">
+                    <label style="margin-right: 0.5em;">VBS Chiapas Winter {{year}}</label>
+                    <input style="margin-right: 2em;" type="radio" v-model="formInput[tableName(index)][field.Field]" v-bind:value="'VBS Chiapas Winter '+ year">
+                    <label style="margin-right: 0.5em;">VBS Guatemala {{year}}</label>
+                    <input style="margin-right: 2em;" type="radio" v-model="formInput[tableName(index)][field.Field]" v-bind:value="'VBS Guatemala '+ year">
+                    <label style="margin-right: 0.5em;">NBS {{year}}</label>
+                    <input style="margin-right: 2em;" type="radio" v-model="formInput[tableName(index)][field.Field]" v-bind:value="'NBS '+ year">
+                    <br>
+                  </template>
+                  <label style="margin-right: 0.5em;">Eigene Bezeichnung:</label>
+                  <input style="margin-right: 0.5em;" type="radio" v-model="formInput[tableName(index)][field.Field]" :value="customSeminarName">
+                  <input v-on:input="formInput[tableName(index)][field.Field]=customSeminarName" v-model="customSeminarName">
+                </template>
+                <template v-else-if="field.Field=='Datum'&&tableName(index)=='seminar'">
+                  <label>{{ field.Field }}</label><br>
+                  <template v-if="year">
+                    <label style="margin-right: 0.5em;">mayo y junio de {{year}}</label>
+                    <input style="margin-right: 2em;" type="radio" v-model="formInput[tableName(index)][field.Field]" v-bind:value="'mayo y junio de '+ year">
+                    <label style="margin-right: 0.5em;">noviembre y diciembre de {{year}}</label>
+                    <input style="margin-right: 2em;" type="radio" v-model="formInput[tableName(index)][field.Field]" v-bind:value="'noviembre y diciembre de '+ year">
+                    <label style="margin-right: 0.5em;">diciembre de {{year}}</label>
+                    <input style="margin-right: 2em;" type="radio" v-model="formInput[tableName(index)][field.Field]" v-bind:value="'diciembre de '+ year">
+                    <label style="margin-right: 0.5em;">octubre de {{year}}</label>
+                    <input style="margin-right: 2em;" type="radio" v-model="formInput[tableName(index)][field.Field]" v-bind:value="'octubre de '+ year">
+                    <br>
+                  </template>
+                  <label style="margin-right: 0.5em;">Eigenes Datum:</label>
+                  <input style="margin-right: 0.5em;" type="radio" v-model="formInput[tableName(index)][field.Field]" :value="customSeminarDate">
+                  <input v-on:input="formInput[tableName(index)][field.Field]=customSeminarDate" v-model="customSeminarDate">
+                </template>
                 <template v-else>
                   <label>{{ field.Field }}</label>
                   <input class="form-control" v-bind:required="!!field.Required" v-model="formInput[tableName(index)][field.Field]" type="text" v-bind:placeholder="field.Field" />
@@ -72,6 +111,8 @@
 
           </form>
 
+          <div v-else class="alert alert-info" style="margin-top: 20px;"><strong>Info: </strong>Bitte erst Ausreise eintragen und dann Notfallkontakt hinzufügen.</div>
+
         </div>
       </div>
     </div>
@@ -88,7 +129,10 @@ export default {
       alertEmph: [],
       alertMessage: [],
       ausreiseId: '',
-      formInput: {}
+      formInput: {},
+      year: '',
+      customSeminarName: '',
+      customSeminarDate: ''
     }
   },
   props: {
